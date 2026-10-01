@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#f3f3f2" />
+    <meta name="description" content="แดชบอร์ดห้องนอนอัจฉริยะ แสดงข้อมูลเซนเซอร์ 6 ค่าและกราฟย้อนหลังแบบเรียลไทม์" />
+    <title>Smart Bedroom · Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%231a1b1b'/%3E%3Cpath d='M13 39h38M17 38V26h30v12M21 26v-4h22v4' fill='none' stroke='%23f46c50' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">SB</div>
+          <div><strong>Smart Bedroom</strong><span>Dashboard</span></div>
+        </div>
+        <div class="topbar-right">
+          <span id="clock" class="clock"></span>
+          <span id="modeBadge" class="mode-badge">ข้อมูลจำลอง</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="overview" aria-labelledby="pageTitle">
+          <div>
+            <div class="eyebrow"><span class="eyebrow-line"></span> BEDROOM OVERVIEW</div>
+            <h1 id="pageTitle">ห้องนอนอัจฉริยะ<span class="wave">✳</span></h1>
+            <p class="overview-copy">สภาพแวดล้อมภายในห้องและการควบคุมอุปกรณ์ในหน้าเดียว</p>
+          </div>
+          <div class="overview-side">
+            <div class="date-block"><span id="dayNumber" class="day-number">--</span><span id="fullDate" class="full-date">กำลังโหลดวันที่</span></div>
+            <div class="connection-card">
+              <div class="connection-top"><span id="connectionDot" class="connection-dot"></span><strong id="connectionTitle">โหมดจำลอง</strong></div>
+              <p id="connectionMessage">ข้อมูลตัวอย่างอัปเดตอัตโนมัติ</p>
+              <span id="lastUpdated" class="last-updated">อัปเดตล่าสุด —</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="section metrics-section" aria-labelledby="metricsTitle">
+          <div class="section-heading">
+            <div><p class="section-kicker">LIVE READINGS</p><h2 id="metricsTitle">ค่าภายในห้อง</h2></div>
+            <button id="refreshButton" class="refresh-button" type="button" title="สร้างข้อมูลจำลองชุดใหม่">↻ <span>จำลองค่าใหม่</span></button>
+          </div>
+          <div class="metrics-grid">
+            <article class="metric-card" data-metric="temperature"><div class="metric-top"><span class="metric-icon">◉</span><span class="metric-index">01 / 06</span></div><div class="metric-label">อุณหภูมิ</div><div class="metric-reading"><strong data-value>—</strong><span>°C</span></div><div class="metric-bottom"><span>Temperature</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+            <article class="metric-card" data-metric="humidity"><div class="metric-top"><span class="metric-icon">◌</span><span class="metric-index">02 / 06</span></div><div class="metric-label">ความชื้น</div><div class="metric-reading"><strong data-value>—</strong><span>%</span></div><div class="metric-bottom"><span>Humidity</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+            <article class="metric-card" data-metric="light"><div class="metric-top"><span class="metric-icon">☼</span><span class="metric-index">03 / 06</span></div><div class="metric-label">ความสว่าง</div><div class="metric-reading"><strong data-value>—</strong><span>lux</span></div><div class="metric-bottom"><span>Light level</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+            <article class="metric-card" data-metric="pm25"><div class="metric-top"><span class="metric-icon">≋</span><span class="metric-index">04 / 06</span></div><div class="metric-label">ฝุ่น PM2.5</div><div class="metric-reading"><strong data-value>—</strong><span>µg/m³</span></div><div class="metric-bottom"><span>Fine particles</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+            <article class="metric-card" data-metric="co2"><div class="metric-top"><span class="metric-icon">◎</span><span class="metric-index">05 / 06</span></div><div class="metric-label">คาร์บอนไดออกไซด์</div><div class="metric-reading"><strong data-value>—</strong><span>ppm</span></div><div class="metric-bottom"><span>CO₂</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+            <article class="metric-card" data-metric="noise"><div class="metric-top"><span class="metric-icon">⌁</span><span class="metric-index">06 / 06</span></div><div class="metric-label">ระดับเสียง</div><div class="metric-reading"><strong data-value>—</strong><span>dB</span></div><div class="metric-bottom"><span>Sound level</span><svg data-sparkline viewBox="0 0 102 34" aria-hidden="true"></svg></div></article>
+          </div>
+        </section>
+
+        <section class="lower-grid" aria-label="กราฟและการควบคุม">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><p class="section-kicker">HISTORY</p><h2>แนวโน้มย้อนหลัง</h2></div><label class="select-wrap"><span class="sr-only">เลือกข้อมูลในกราฟ</span><select id="chartMetric"><option value="temperature">อุณหภูมิ</option><option value="humidity">ความชื้น</option><option value="light">ความสว่าง</option><option value="pm25">ฝุ่น PM2.5</option><option value="co2">CO₂</option><option value="noise">ระดับเสียง</option></select></label></div>
+            <div class="chart-summary"><strong id="chartValue">—</strong><span id="chartUnit">°C</span><span class="chart-hint">ค่าล่าสุด</span></div>
+            <div class="chart-wrap"><svg id="historyChart" viewBox="0 0 720 260" role="img" aria-label="กราฟแนวโน้มย้อนหลัง"></svg></div>
+            <div class="chart-footer"><span id="chartStart">—</span><span id="chartEnd">—</span></div>
+          </article>
+
+          <article class="panel controls-panel">
+            <div class="panel-heading"><div><p class="section-kicker">CONTROLS</p><h2>ควบคุมอุปกรณ์</h2></div><span class="panel-icon" aria-hidden="true">⌘</span></div>
+            <p id="controlsNote" class="controls-note">สวิตช์ทำงานเฉพาะบนหน้านี้ในโหมดจำลอง</p>
+            <div class="control-list">
+              <div class="control-row"><div class="control-icon light-icon" aria-hidden="true">☼</div><div class="control-name"><strong>ไฟห้อง</strong><span id="lightState">ปิดอยู่</span></div><button id="lightSwitch" class="switch" type="button" role="switch" aria-checked="false" aria-label="เปิดหรือปิดไฟห้อง"><span></span></button></div>
+              <div class="control-row"><div class="control-icon fan-icon" aria-hidden="true">✳</div><div class="control-name"><strong>พัดลม</strong><span id="fanState">ปิดอยู่</span></div><button id="fanSwitch" class="switch" type="button" role="switch" aria-checked="false" aria-label="เปิดหรือปิดพัดลม"><span></span></button></div>
+            </div>
+            <div class="control-footnote"><span class="tiny-dot"></span> <span id="controlFootnote">คำสั่งยังไม่ส่งไปยังอุปกรณ์จริง</span></div>
+          </article>
+        </section>
+
+        <section class="panel history-panel" aria-labelledby="historyTitle"><div class="panel-heading"><div><p class="section-kicker">DATA LOG</p><h2 id="historyTitle">รายการล่าสุด</h2></div><span id="historyCount" class="history-count">0 รายการ</span></div><div class="table-scroll"><table><thead><tr><th>เวลา</th><th>อุณหภูมิ</th><th>ความชื้น</th><th>แสง</th><th>PM2.5</th><th>CO₂</th><th>เสียง</th></tr></thead><tbody id="historyBody"><tr><td colspan="7" class="empty-cell">กำลังโหลดข้อมูล</td></tr></tbody></table></div></section>
+      </main>
+      <footer><span>SMART BEDROOM / IoT DASHBOARD</span><span id="footerMode">ข้อมูลจำลองสำหรับการออกแบบระบบ</span></footer>
+    </div>
+    <script src="./config.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

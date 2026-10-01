@@ -1,0 +1,8 @@
+# ESPHome secrets and generated build files
+firmware/secrets.yaml
+firmware/.esphome/
+.esphome/
+
+# OS/editor files
+.DS_Store
+Thumbs.db

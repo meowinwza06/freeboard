@@ -1,0 +1,127 @@
+substitutions:
+  firebase_url: "https://iot-108-41795-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+esphome:
+  name: smart-bedroom-esp32
+  friendly_name: Smart Bedroom ESP32
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+logger:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+  ap:
+    ssid: "SmartBedroom-Setup"
+    password: !secret fallback_ap_password
+
+captive_portal:
+
+time:
+  - platform: sntp
+    id: network_time
+    timezone: Asia/Bangkok
+
+http_request:
+  verify_ssl: true
+  timeout: 15s
+
+sensor:
+  - platform: template
+    name: "Bedroom Temperature Simulated"
+    id: room_temperature
+    unit_of_measurement: "°C"
+    accuracy_decimals: 1
+    update_interval: never
+  - platform: template
+    name: "Bedroom Humidity Simulated"
+    id: room_humidity
+    unit_of_measurement: "%"
+    accuracy_decimals: 0
+    update_interval: never
+  - platform: template
+    name: "Bedroom Light Simulated"
+    id: room_light
+    unit_of_measurement: "lx"
+    accuracy_decimals: 0
+    update_interval: never
+  - platform: template
+    name: "Bedroom PM2.5 Simulated"
+    id: room_pm25
+    unit_of_measurement: "µg/m³"
+    accuracy_decimals: 1
+    update_interval: never
+  - platform: template
+    name: "Bedroom CO2 Simulated"
+    id: room_co2
+    unit_of_measurement: "ppm"
+    accuracy_decimals: 0
+    update_interval: never
+  - platform: template
+    name: "Bedroom Noise Simulated"
+    id: room_noise
+    unit_of_measurement: "dB"
+    accuracy_decimals: 0
+    update_interval: never
+
+interval:
+  - interval: 30s
+    then:
+      - lambda: |-
+          id(room_temperature).publish_state(24.0f + (esp_random() % 700) / 100.0f);
+          id(room_humidity).publish_state(40.0f + (esp_random() % 3100) / 100.0f);
+          id(room_light).publish_state(20.0f + (esp_random() % 481));
+          id(room_pm25).publish_state(5.0f + (esp_random() % 350) / 10.0f);
+          id(room_co2).publish_state(450.0f + (esp_random() % 751));
+          id(room_noise).publish_state(30.0f + (esp_random() % 41));
+      - if:
+          condition:
+            and:
+              - wifi.connected:
+              - time.has_time:
+          then:
+            - http_request.send:
+                method: PUT
+                url: "${firebase_url}/lab/latest.json"
+                request_headers:
+                  Content-Type: application/json
+                json: |-
+                  root["timestamp"] = (int64_t) id(network_time).now().timestamp * 1000LL;
+                  root["temperature"] = id(room_temperature).state;
+                  root["humidity"] = id(room_humidity).state;
+                  root["light"] = id(room_light).state;
+                  root["pm25"] = id(room_pm25).state;
+                  root["co2"] = id(room_co2).state;
+                  root["noise"] = id(room_noise).state;
+                on_response:
+                  then:
+                    - logger.log:
+                        format: "Firebase latest: HTTP %d"
+                        args: [ 'response->status_code' ]
+                on_error:
+                  then:
+                    - logger.log: "Firebase latest request failed"
+            - http_request.post:
+                url: "${firebase_url}/lab/history.json"
+                request_headers:
+                  Content-Type: application/json
+                json: |-
+                  root["timestamp"] = (int64_t) id(network_time).now().timestamp * 1000LL;
+                  root["temperature"] = id(room_temperature).state;
+                  root["humidity"] = id(room_humidity).state;
+                  root["light"] = id(room_light).state;
+                  root["pm25"] = id(room_pm25).state;
+                  root["co2"] = id(room_co2).state;
+                  root["noise"] = id(room_noise).state;
+                on_response:
+                  then:
+                    - logger.log:
+                        format: "Firebase history: HTTP %d"
+                        args: [ 'response->status_code' ]
+                on_error:
+                  then:
+                    - logger.log: "Firebase history request failed"
